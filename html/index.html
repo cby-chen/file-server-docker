@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>私人文件服务器</title>
 <style>
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 10% 0%,#102c43,transparent 30%),#07101d;color:#e9f1ff;font:15px system-ui,"Microsoft YaHei",sans-serif}.app{max-width:1300px;margin:auto;padding:22px}header,.toolbar,.crumbs,.top{display:flex;align-items:center;gap:12px;justify-content:space-between;flex-wrap:wrap}header{margin-bottom:18px}h1{font-size:22px;margin:0}small,.muted{color:#8196b2}button,.btn{border:1px solid #2b405e;border-radius:10px;padding:10px 13px;background:#0d1c30;color:#dceaff;cursor:pointer;text-decoration:none}button:hover,.btn:hover{border-color:#4cbfff}.primary{border:0;background:linear-gradient(120deg,#19b9ff,#7959ff);font-weight:bold}.panel{padding:18px;margin:15px 0;background:#0b1729d9;border:1px solid #ffffff12;border-radius:17px;box-shadow:0 14px 50px #0003}.search{flex:1;min-width:200px}input{height:42px;padding:0 12px;border-radius:10px;border:1px solid #2b405e;background:#071323;color:white}.drop{display:block;text-align:center;border:1px dashed #3d5b7e;padding:25px;border-radius:15px;background:#0b2036;cursor:pointer}.drop.drag{border-color:#47c7ff;background:#123452}.picker{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}.crumbs{justify-content:flex-start;margin-bottom:15px}.crumb{color:#63caff;cursor:pointer}.row{display:grid;grid-template-columns:minmax(180px,1fr) 100px 190px 140px;align-items:center;gap:12px;padding:12px 4px;border-bottom:1px solid #ffffff0e}.name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer}.actions{display:flex;gap:6px;justify-content:flex-end}.mini{font-size:12px;padding:7px}.danger{color:#ff9ba5}.upload{padding:12px;border:1px solid #243a56;border-radius:12px;margin:8px 0}.bar{height:9px;background:#182b42;border-radius:10px;margin-top:10px;overflow:hidden;position:relative;box-shadow:inset 0 1px 3px #0006}.bar i{display:block;height:100%;width:0;border-radius:inherit;background:linear-gradient(90deg,#19b9ff,#7a63ff,#37e5d1);background-size:200% 100%;transition:width .18s ease-out;position:relative;overflow:hidden;box-shadow:0 0 10px #22baff70}.upload.is-uploading .bar i{animation:barGlow 1.6s linear infinite}.upload.is-uploading .bar i:after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 20%,#ffffff80 48%,transparent 75%);transform:translateX(-100%);animation:barShine 1.2s ease-in-out infinite}.upload .status{font-variant-numeric:tabular-nums;color:#71d9ff}.upload.is-done .bar i{background:linear-gradient(90deg,#19d7a0,#55edc5);animation:none}.upload.is-error .bar i{background:#ff657d;animation:none}@keyframes barShine{to{transform:translateX(100%)}}@keyframes barGlow{to{background-position:200% 0}}@media(prefers-reduced-motion:reduce){.bar i,.upload.is-uploading .bar i,.upload.is-uploading .bar i:after{animation:none;transition:none}}.empty{text-align:center;padding:35px;color:#8196b2}@media(max-width:700px){.row{grid-template-columns:1fr 70px 110px}.row .time{display:none}.row .actions{grid-column:2/-1}}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 10% 0%,#102c43,transparent 30%),#07101d;color:#e9f1ff;font:15px system-ui,"Microsoft YaHei",sans-serif}.app{max-width:1300px;margin:auto;padding:22px}header,.toolbar,.crumbs,.top{display:flex;align-items:center;gap:12px;justify-content:space-between;flex-wrap:wrap}header{margin-bottom:18px}h1{font-size:22px;margin:0}small,.muted{color:#8196b2}button,.btn{border:1px solid #2b405e;border-radius:10px;padding:10px 13px;background:#0d1c30;color:#dceaff;cursor:pointer;text-decoration:none}button:hover,.btn:hover{border-color:#4cbfff}.primary{border:0;background:linear-gradient(120deg,#19b9ff,#7959ff);font-weight:bold}.panel{padding:18px;margin:15px 0;background:#0b1729d9;border:1px solid #ffffff12;border-radius:17px;box-shadow:0 14px 50px #0003}.search{flex:1;min-width:200px}input{height:42px;padding:0 12px;border-radius:10px;border:1px solid #2b405e;background:#071323;color:white}.drop{display:block;text-align:center;border:1px dashed #3d5b7e;padding:25px;border-radius:15px;background:#0b2036;cursor:pointer}.drop.drag{border-color:#47c7ff;background:#123452}.picker{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}.crumbs{justify-content:flex-start;margin-bottom:15px}.crumb{color:#63caff;cursor:pointer}.row{display:grid;grid-template-columns:minmax(180px,1fr) 100px 190px 140px;align-items:center;gap:12px;padding:12px 4px;border-bottom:1px solid #ffffff0e}.name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer}.actions{display:flex;gap:6px;justify-content:flex-end}.mini{font-size:12px;padding:7px}.danger{color:#ff9ba5}.upload{padding:12px;border:1px solid #243a56;border-radius:12px;margin:8px 0}.upload-controls{display:flex;align-items:center;gap:7px;flex-wrap:wrap}.upload-controls .status{margin-right:5px}.upload-controls button:disabled{opacity:.45;cursor:not-allowed}.bar{height:9px;background:#182b42;border-radius:10px;margin-top:10px;overflow:hidden;position:relative;box-shadow:inset 0 1px 3px #0006}.bar i{display:block;height:100%;width:0;border-radius:inherit;background:linear-gradient(90deg,#19b9ff,#7a63ff,#37e5d1);background-size:200% 100%;transition:width .18s ease-out;position:relative;overflow:hidden;box-shadow:0 0 10px #22baff70}.upload.is-uploading .bar i{animation:barGlow 1.6s linear infinite}.upload.is-uploading .bar i:after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 20%,#ffffff80 48%,transparent 75%);transform:translateX(-100%);animation:barShine 1.2s ease-in-out infinite}.upload .status{font-variant-numeric:tabular-nums;color:#71d9ff}.upload.is-done .bar i{background:linear-gradient(90deg,#19d7a0,#55edc5);animation:none}.upload.is-error .bar i{background:#ff657d;animation:none}@keyframes barShine{to{transform:translateX(100%)}}@keyframes barGlow{to{background-position:200% 0}}@media(prefers-reduced-motion:reduce){.bar i,.upload.is-uploading .bar i,.upload.is-uploading .bar i:after{animation:none;transition:none}}.empty{text-align:center;padding:35px;color:#8196b2}@media(max-width:700px){.row{grid-template-columns:1fr 70px 110px}.row .time{display:none}.row .actions{grid-column:2/-1}}
 </style></head><body><div class="app"><header><div><h1>☁️ 私人文件服务器</h1><small id="who">验证登录…</small></div><div class="toolbar"><button id="newFolder">＋ 新建文件夹</button><button id="refresh">刷新</button><button id="logout">退出登录</button></div></header>
 <section class="panel"><div class="toolbar"><input id="query" class="search" placeholder="搜索文件名或路径"><button id="search">搜索</button><button id="clear">清除</button></div><p class="muted" id="config">读取配置…</p></section>
 <section class="panel"><div id="breadcrumbs" class="crumbs"></div><label id="dropArea" class="drop" for="filePicker"><div style="font-size:32px">⬆️</div><strong>拖拽文件到这里，或点击选择文件</strong><p class="muted">支持多文件、并发分片上传与已上传分片跳过</p><span class="btn primary">选择文件</span><input id="filePicker" class="picker" type="file" multiple></label></section>
@@ -19,69 +19,111 @@ async function runSearch(){const q=$('query').value.trim();if(!q)return loadFile
 $('search').onclick=runSearch;$('query').onkeydown=e=>{if(e.key==='Enter')runSearch()};$('clear').onclick=()=>{$('query').value='';loadFiles()};$('refresh').onclick=loadFiles;
 $('newFolder').onclick=async()=>{const name=prompt('文件夹名称');if(name){try{await api('/api/folder',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({path:(currentPath?currentPath+'/':'')+name})});await loadFiles()}catch(e){alert(e.message)}}};
 $('logout').onclick=async()=>{await fetch('/api/logout',{method:'POST'});location.href='/login.html'};
-function uploadCard(file){const el=document.createElement('div');el.className='upload';el.innerHTML='<div class="top"><b>'+escapeHtml(file.name)+'</b><span class="status">准备中</span></div><p class="muted meta">0 / '+formatSize(file.size)+'</p><div class="bar"><i></i></div>';$('uploads').prepend(el);return el}
+function uploadCard(file){
+ const el=document.createElement('div');el.className='upload';
+ el.innerHTML='<div class="top"><b>'+escapeHtml(file.name)+'</b><div class="upload-controls"><span class="status">准备中</span><button type="button" class="mini pause-upload">暂停</button><button type="button" class="mini danger cancel-upload">取消</button></div></div><p class="muted meta">0 / '+formatSize(file.size)+'</p><div class="bar"><i></i></div>';
+ $('uploads').prepend(el);return el;
+}
 async function uploadFile(file){
  const el=uploadCard(file),status=el.querySelector('.status'),bar=el.querySelector('.bar i'),meta=el.querySelector('.meta');
+ const pauseButton=el.querySelector('.pause-upload'),cancelButton=el.querySelector('.cancel-upload');
+ const state={paused:false,cancelled:false,finished:false,uploadId:null,active:new Map(),waiters:[],cancelPromise:null};
  el.classList.add('is-uploading');
+ function setStatus(text){status.textContent=text}
+ function wakeWorkers(){state.waiters.splice(0).forEach(resolve=>resolve())}
+ function waitUntilRunning(){
+  if(state.cancelled)return Promise.reject(new Error('上传已取消'));
+  if(!state.paused)return Promise.resolve();
+  return new Promise(resolve=>state.waiters.push(resolve)).then(()=>state.cancelled?Promise.reject(new Error('上传已取消')):undefined);
+ }
+ pauseButton.onclick=()=>{
+  if(state.cancelled||state.finished)return;
+  state.paused=!state.paused;
+  pauseButton.textContent=state.paused?'继续':'暂停';
+  if(state.paused){
+   setStatus('正在暂停…');
+   for(const xhr of state.active.values())try{xhr.abort()}catch{}
+   setStatus('已暂停');
+  }else{
+   setStatus('上传中');
+   wakeWorkers();
+  }
+ };
+ cancelButton.onclick=async()=>{
+  if(state.cancelled||state.finished)return;
+  if(!confirm('确定取消上传“'+file.name+'”？已上传的临时分片也会删除。'))return;
+  state.cancelled=true;state.paused=false;setStatus('正在取消…');
+  wakeWorkers();
+  for(const xhr of state.active.values())try{xhr.abort()}catch{}
+  pauseButton.disabled=true;cancelButton.disabled=true;
+  if(state.uploadId){
+   try{await api('/api/upload/cancel?upload_id='+encodeURIComponent(state.uploadId),{method:'DELETE'})}catch(error){meta.textContent='取消请求失败：'+error.message;return}
+  }
+  el.classList.remove('is-uploading');el.classList.add('is-error');
+  setStatus('已取消');meta.textContent='上传已取消，临时分片已清理';
+  bar.style.width='0%';pauseButton.disabled=true;
+ };
  try{
   const task=await api('/api/upload/init',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({filename:file.name,size:file.size,folder:currentPath})});
-  const state=await api('/api/upload/status?upload_id='+encodeURIComponent(task.upload_id));
-  const done=new Set(state.uploaded_chunks||[]);
-  let confirmedBytes=state.uploaded_bytes||0;
+  state.uploadId=task.upload_id;
+  if(state.cancelled){await api('/api/upload/cancel?upload_id='+encodeURIComponent(task.upload_id),{method:'DELETE'});return}
+  const uploadState=await api('/api/upload/status?upload_id='+encodeURIComponent(task.upload_id));
+  const done=new Set(uploadState.uploaded_chunks||[]);
+  let confirmedBytes=uploadState.uploaded_bytes||0;
   const inFlight=new Map();
-  const started=performance.now();
-  let lastSampleTime=started,lastSampleBytes=confirmedBytes,smoothedSpeed=0;
+  const started=performance.now();let lastSampleTime=started,lastSampleBytes=confirmedBytes,smoothedSpeed=0;
   function update(){
    const activeBytes=Array.from(inFlight.values()).reduce((sum,n)=>sum+n,0);
    const transferred=Math.min(file.size,Math.max(0,confirmedBytes+activeBytes));
    const percent=file.size?transferred/file.size*100:100;
-   const now=performance.now(),elapsed=(now-started)/1000,deltaTime=(now-lastSampleTime)/1000,deltaBytes=transferred-lastSampleBytes;
-   if(deltaTime>=0.2){
-    const instant=Math.max(0,deltaBytes/deltaTime);
-    smoothedSpeed=smoothedSpeed?smoothedSpeed*0.65+instant*0.35:instant;
-    lastSampleTime=now;lastSampleBytes=transferred;
-   }
+   const now=performance.now(),deltaTime=(now-lastSampleTime)/1000,deltaBytes=transferred-lastSampleBytes;
+   if(deltaTime>=0.2){const instant=Math.max(0,deltaBytes/deltaTime);smoothedSpeed=smoothedSpeed?smoothedSpeed*0.65+instant*0.35:instant;lastSampleTime=now;lastSampleBytes=transferred}
    bar.style.width=percent.toFixed(2)+'%';
-   status.textContent=(percent>=100?'100':percent.toFixed(1))+'% · '+done.size+'/'+task.chunk_count+' 分片';
+   if(!state.paused&&!state.cancelled)setStatus((percent>=100?'100':percent.toFixed(1))+'% · '+done.size+'/'+task.chunk_count+' 分片');
    const remaining=smoothedSpeed>0?Math.ceil(Math.max(0,file.size-transferred)/smoothedSpeed):null;
    meta.textContent=formatSize(transferred)+' / '+formatSize(file.size)+' · '+formatSize(smoothedSpeed)+'/s · '+(remaining===null?'计算剩余时间…':'剩余约 '+remaining+' 秒')+' · 并发 '+task.concurrency;
   }
   function putChunk(index,blob){
    return new Promise((resolve,reject)=>{
     const xhr=new XMLHttpRequest();
+    state.active.set(index,xhr);
     xhr.open('PUT','/api/upload/chunk?upload_id='+encodeURIComponent(task.upload_id)+'&index='+index,true);
     xhr.setRequestHeader('Content-Type','application/octet-stream');
     xhr.upload.onprogress=event=>{if(event.lengthComputable||event.loaded>=0){inFlight.set(index,Math.min(blob.size,event.loaded));update()}};
     xhr.onload=()=>{
-     inFlight.delete(index);
-     if(xhr.status>=200&&xhr.status<300){
-      done.add(index);confirmedBytes+=blob.size;update();resolve();
-     }else if(xhr.status===401){location.href='/login.html';reject(new Error('登录已失效'))}
+     state.active.delete(index);inFlight.delete(index);
+     if(xhr.status>=200&&xhr.status<300){done.add(index);confirmedBytes+=blob.size;update();resolve('done')}
+     else if(xhr.status===401){location.href='/login.html';reject(new Error('登录已失效'))}
      else{let message='分片上传失败（HTTP '+xhr.status+'）';try{message=JSON.parse(xhr.responseText).error||message}catch{}update();reject(new Error(message))}
     };
-    xhr.onerror=()=>{inFlight.delete(index);update();reject(new Error('网络连接中断，分片 '+index+' 上传失败'))};
-    xhr.onabort=()=>{inFlight.delete(index);update();reject(new Error('分片上传已取消'))};
+    xhr.onerror=()=>{state.active.delete(index);inFlight.delete(index);update();if(state.paused||state.cancelled)resolve('retry');else reject(new Error('网络连接中断，分片 '+index+' 上传失败'))};
+    xhr.onabort=()=>{state.active.delete(index);inFlight.delete(index);update();if(state.paused||state.cancelled)resolve('retry');else reject(new Error('分片上传已中断'))};
     inFlight.set(index,0);update();xhr.send(blob);
    });
   }
-  update();
-  let next=0;
+  update();let next=0;
   async function worker(){
    while(true){
+    await waitUntilRunning();
     let index=-1;
     while(next<task.chunk_count){const candidate=next++;if(!done.has(candidate)){index=candidate;break}}
     if(index<0)return;
     const blob=file.slice(index*task.chunk_size,Math.min((index+1)*task.chunk_size,file.size));
-    await putChunk(index,blob);
+    const result=await putChunk(index,blob);
+    if(result==='retry'&&!state.cancelled){if(!done.has(index))next=Math.min(next,index);continue}
    }
   }
   await Promise.all(Array.from({length:Math.min(task.concurrency,Math.max(0,task.chunk_count-done.size))},worker));
-  status.textContent='分片已上传，正在合并…';meta.textContent='所有分片已传输，服务器正在校验并合并文件';
+  if(state.cancelled)return;
+  await waitUntilRunning();
+  setStatus('分片已上传，正在合并…');meta.textContent='所有分片已传输，服务器正在校验并合并文件';
   const result=await api('/api/upload/complete',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({upload_id:task.upload_id})});
-  bar.style.width='100%';status.textContent='完成';el.classList.remove('is-uploading');el.classList.add('is-done');meta.textContent=formatSize(result.size)+' · 上传完成';
-  setTimeout(()=>el.remove(),8000);await loadFiles();
+  state.finished=true;bar.style.width='100%';setStatus('完成');el.classList.remove('is-uploading');el.classList.add('is-done');meta.textContent=formatSize(result.size)+' · 上传完成';
+  pauseButton.disabled=true;cancelButton.disabled=true;setTimeout(()=>el.remove(),8000);await loadFiles();
  }catch(error){
-  el.classList.remove('is-uploading');el.classList.add('is-error');status.textContent='失败';status.style.color='#ff9ba5';meta.textContent=error.message;
+  if(state.cancelled)return;
+  el.classList.remove('is-uploading');el.classList.add('is-error');status.style.color='#ff9ba5';setStatus('失败');meta.textContent=error.message;
+  pauseButton.disabled=true;cancelButton.disabled=true;
  }
 }
 function addFiles(fileList){Array.from(fileList).forEach(uploadFile)}
