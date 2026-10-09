@@ -1,7 +1,6 @@
 services:
   app:
-    image: ${APP_IMAGE:-file-server:local}
-    build: ./app
+    image: ${APP_IMAGE:-registry.cn-hangzhou.aliyuncs.com/chenby/cby:latest}
     restart: unless-stopped
     environment:
       FILE_USER: ${FILE_USER:-admin}
@@ -15,15 +14,14 @@ services:
     volumes:
       - /data/files:/data/files
     expose: ["5000"]
+
   nginx:
-    image: nginx:alpine
+    image: ${NGINX_IMAGE:-registry.cn-hangzhou.aliyuncs.com/chenby/cby-nginx:latest}
     restart: unless-stopped
     depends_on: [app]
     ports:
       - "17001:80"
       - "17002:443"
     volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./html:/usr/share/nginx/html:ro
       - /data/files:/data/files:ro
       - ./certs:/etc/nginx/certs:ro
