@@ -1,0 +1,28 @@
+services:
+  app:
+    build: ./app
+    restart: unless-stopped
+    environment:
+      FILE_USER: ${FILE_USER:-admin}
+      FILE_PASSWORD: ${FILE_PASSWORD:?Set FILE_PASSWORD in .env}
+      SECRET_KEY: ${SECRET_KEY:?Set SECRET_KEY in .env}
+      FILE_ROOT: /data/files
+      MAX_UPLOAD_SIZE: ${MAX_UPLOAD_SIZE:-50GB}
+      UPLOAD_CHUNK_SIZE: ${UPLOAD_CHUNK_SIZE:-16MB}
+      UPLOAD_CONCURRENCY: ${UPLOAD_CONCURRENCY:-4}
+      SESSION_TIMEOUT_HOURS: ${SESSION_TIMEOUT_HOURS:-12}
+    volumes:
+      - /data/files:/data/files
+    expose: ["5000"]
+  nginx:
+    image: nginx:alpine
+    restart: unless-stopped
+    depends_on: [app]
+    ports:
+      - "17001:80"
+      - "17002:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./html:/usr/share/nginx/html:ro
+      - /data/files:/data/files:ro
+      - ./certs:/etc/nginx/certs:ro
