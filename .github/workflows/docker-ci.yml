@@ -126,8 +126,13 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/nginx-certs"
+          openssl req -x509 -nodes -newkey rsa:2048 \
+            -keyout "$RUNNER_TEMP/nginx-certs/server.key" \
+            -out "$RUNNER_TEMP/nginx-certs/server.crt" \
+            -days 1 -subj "/CN=localhost"
           docker run --rm \
-            -v "$PWD/certs:/etc/nginx/certs:ro" \
+            -v "$RUNNER_TEMP/nginx-certs:/etc/nginx/certs:ro" \
             file-server-nginx-ci:${GITHUB_SHA} nginx -t
 
       - name: Generate readable China-time tags
