@@ -17,7 +17,7 @@ cd /opt/file-server
 cp .env.example .env
 # 编辑 .env，设置强密码和随机 SECRET_KEY
 cd certs
-./generate-cert.sh
+sh generate-cert.sh
 cd ..
 docker compose up -d --build
 docker compose ps
