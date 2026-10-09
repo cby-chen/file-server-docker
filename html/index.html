@@ -109,8 +109,12 @@ async function uploadFile(file){
     while(next<task.chunk_count){const candidate=next++;if(!done.has(candidate)){index=candidate;break}}
     if(index<0)return;
     const blob=file.slice(index*task.chunk_size,Math.min((index+1)*task.chunk_size,file.size));
-    const result=await putChunk(index,blob);
-    if(result==='retry'&&!state.cancelled){if(!done.has(index))next=Math.min(next,index);continue}
+    while(!done.has(index)){
+     await waitUntilRunning();
+     const result=await putChunk(index,blob);
+     if(result==='done')break;
+     if(state.cancelled)return;
+    }
    }
   }
   await Promise.all(Array.from({length:Math.min(task.concurrency,Math.max(0,task.chunk_count-done.size))},worker));
