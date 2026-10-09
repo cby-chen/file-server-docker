@@ -132,6 +132,7 @@ jobs:
             -out "$RUNNER_TEMP/nginx-certs/server.crt" \
             -days 1 -subj "/CN=localhost"
           docker run --rm \
+            --add-host app:127.0.0.1 \
             -v "$RUNNER_TEMP/nginx-certs:/etc/nginx/certs:ro" \
             file-server-nginx-ci:${GITHUB_SHA} nginx -t
 
