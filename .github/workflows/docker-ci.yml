@@ -156,10 +156,10 @@ jobs:
           {
             echo "### Published Docker images"
             echo
-            echo "- China-time tag: `$TIMESTAMP_TAG`"
-            echo "- Short commit tag: `$SHORT_SHA`"
-            echo "- Rolling tag: `latest`"
+            echo "- China-time tag: $TIMESTAMP_TAG"
+            echo "- Short commit tag: $SHORT_SHA"
+            echo "- Rolling tag: latest"
             echo
-            echo "- ACR: `$ACR_IMAGE:$TIMESTAMP_TAG`"
-            echo "- GHCR: `$GHCR_IMAGE:$TIMESTAMP_TAG`"
+            echo "- ACR: $ACR_IMAGE:$TIMESTAMP_TAG"
+            echo "- GHCR: $GHCR_IMAGE:$TIMESTAMP_TAG"
           } >> "$GITHUB_STEP_SUMMARY"
