@@ -1,6 +1,6 @@
 services:
   app:
-    image: ${APP_IMAGE:-registry.cn-hangzhou.aliyuncs.com/chenby/cby:latest}
+    image: ${APP_IMAGE:-registry.cn-hangzhou.aliyuncs.com/chenby/file-server-docker:latest}
     restart: unless-stopped
     environment:
       FILE_USER: ${FILE_USER:-admin}
@@ -16,7 +16,7 @@ services:
     expose: ["5000"]
 
   nginx:
-    image: ${NGINX_IMAGE:-registry.cn-hangzhou.aliyuncs.com/chenby/cby-nginx:latest}
+    image: ${NGINX_IMAGE:-registry.cn-hangzhou.aliyuncs.com/chenby/file-server-docker-nginx:latest}
     restart: unless-stopped
     depends_on: [app]
     ports:
