@@ -1,0 +1,160 @@
+name: File Server CI and Publish
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: file-server-publish-main
+  cancel-in-progress: false
+
+jobs:
+  build-test-publish:
+    name: Build, test and publish
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Validate repository and registry configuration
+        shell: bash
+        env:
+          ACR_REGISTRY: ${{ vars.ACR_REGISTRY }}
+          ACR_IMAGE: ${{ vars.ACR_IMAGE }}
+        run: |
+          set -euo pipefail
+          test -f app/Dockerfile
+          test -f app/app.py
+          test -f app/requirements.txt
+          test -f docker-compose.yml
+
+          test -n "$ACR_REGISTRY" || {
+            echo "::error::Set Actions variable ACR_REGISTRY first"
+            exit 1
+          }
+          test -n "$ACR_IMAGE" || {
+            echo "::error::Set Actions variable ACR_IMAGE first"
+            exit 1
+          }
+          case "$ACR_IMAGE" in
+            "$ACR_REGISTRY"/*) ;;
+            *)
+              echo "::error::ACR_IMAGE must begin with ACR_REGISTRY/"
+              exit 1
+              ;;
+          esac
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Check Python syntax
+        run: python -m py_compile app/app.py
+
+      - name: Build Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./app
+          file: ./app/Dockerfile
+          tags: file-server-ci:${{ github.sha }}
+          load: true
+          push: false
+          cache-from: type=gha,scope=file-server
+          cache-to: type=gha,mode=max,scope=file-server
+
+      - name: Smoke test container
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker run -d \
+            --name file-server-ci-test \
+            -p 127.0.0.1:5000:5000 \
+            -e SECRET_KEY=ci-only-test-secret \
+            -e FILE_PASSWORD=ci-only-test-password \
+            file-server-ci:${GITHUB_SHA}
+
+          cleanup() {
+            docker rm -f file-server-ci-test >/dev/null 2>&1 || true
+          }
+          trap cleanup EXIT
+
+          success=0
+          for i in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:5000/health; then
+              echo
+              success=1
+              break
+            fi
+            sleep 2
+          done
+
+          if [ "$success" -ne 1 ]; then
+            docker logs file-server-ci-test
+            echo "::error::Container health check failed"
+            exit 1
+          fi
+
+      - name: Generate readable China-time tags
+        id: image-tags
+        shell: bash
+        run: |
+          set -euo pipefail
+          TAG="$(TZ=Asia/Shanghai date +'%Y%m%d-%H%M%S')"
+          SHORT_SHA="${GITHUB_SHA:0:7}"
+          echo "timestamp=$TAG" >> "$GITHUB_OUTPUT"
+          echo "short_sha=$SHORT_SHA" >> "$GITHUB_OUTPUT"
+          echo "Image timestamp tag: $TAG"
+
+      - name: Login to Alibaba Cloud ACR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ vars.ACR_REGISTRY }}
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Tag and publish to both registries
+        shell: bash
+        env:
+          ACR_IMAGE: ${{ vars.ACR_IMAGE }}
+          GHCR_IMAGE: ghcr.io/${{ github.repository }}
+          TIMESTAMP_TAG: ${{ steps.image-tags.outputs.timestamp }}
+          SHORT_SHA: ${{ steps.image-tags.outputs.short_sha }}
+        run: |
+          set -euo pipefail
+          SOURCE="file-server-ci:${GITHUB_SHA}"
+
+          for IMAGE in "$ACR_IMAGE" "$GHCR_IMAGE"; do
+            docker tag "$SOURCE" "${IMAGE}:${TIMESTAMP_TAG}"
+            docker tag "$SOURCE" "${IMAGE}:${SHORT_SHA}"
+            docker tag "$SOURCE" "${IMAGE}:latest"
+            docker push "${IMAGE}:${TIMESTAMP_TAG}"
+            docker push "${IMAGE}:${SHORT_SHA}"
+            docker push "${IMAGE}:latest"
+          done
+
+          {
+            echo "### Published Docker images"
+            echo
+            echo "- China-time tag: `$TIMESTAMP_TAG`"
+            echo "- Short commit tag: `$SHORT_SHA`"
+            echo "- Rolling tag: `latest`"
+            echo
+            echo "- ACR: `$ACR_IMAGE:$TIMESTAMP_TAG`"
+            echo "- GHCR: `$GHCR_IMAGE:$TIMESTAMP_TAG`"
+          } >> "$GITHUB_STEP_SUMMARY"
