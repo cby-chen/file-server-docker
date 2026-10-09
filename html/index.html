@@ -120,7 +120,7 @@ async function uploadFile(file){
   await Promise.all(Array.from({length:Math.min(task.concurrency,Math.max(0,task.chunk_count-done.size))},worker));
   if(state.cancelled)return;
   await waitUntilRunning();
-  setStatus('分片已上传，正在合并…');meta.textContent='所有分片已传输，服务器正在校验并合并文件';
+  pauseButton.disabled=true;cancelButton.disabled=true;setStatus('分片已上传，正在合并…');meta.textContent='所有分片已传输，服务器正在校验并合并文件';
   const result=await api('/api/upload/complete',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({upload_id:task.upload_id})});
   state.finished=true;bar.style.width='100%';setStatus('完成');el.classList.remove('is-uploading');el.classList.add('is-done');meta.textContent=formatSize(result.size)+' · 上传完成';
   pauseButton.disabled=true;cancelButton.disabled=true;setTimeout(()=>el.remove(),8000);await loadFiles();
