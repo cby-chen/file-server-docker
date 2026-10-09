@@ -13,8 +13,8 @@ CI 会将这两个镜像分别发布到阿里云 ACR 和 GitHub Container Regist
 
 | 用途 | 镜像地址 |
 | --- | --- |
-| 应用后端 | registry.cn-hangzhou.aliyuncs.com/chenby/cby:latest |
-| Nginx 网页入口 | registry.cn-hangzhou.aliyuncs.com/chenby/cby-nginx:latest |
+| 应用后端 | registry.cn-hangzhou.aliyuncs.com/chenby/file-server-docker:latest |
+| Nginx 网页入口 | registry.cn-hangzhou.aliyuncs.com/chenby/file-server-docker-nginx:latest |
 
 ### GitHub Container Registry（可选）
 
@@ -65,8 +65,8 @@ UPLOAD_CONCURRENCY=4
 SESSION_TIMEOUT_HOURS=12
 
 # 默认使用阿里云 ACR；如需使用 GHCR，请改为下面两行
-APP_IMAGE=registry.cn-hangzhou.aliyuncs.com/chenby/cby:latest
-NGINX_IMAGE=registry.cn-hangzhou.aliyuncs.com/chenby/cby-nginx:latest
+APP_IMAGE=registry.cn-hangzhou.aliyuncs.com/chenby/file-server-docker:latest
+NGINX_IMAGE=registry.cn-hangzhou.aliyuncs.com/chenby/file-server-docker-nginx:latest
 ~~~
 
 生成强随机密钥的示例：
