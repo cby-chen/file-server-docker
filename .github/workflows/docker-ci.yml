@@ -34,6 +34,9 @@ jobs:
           test -f app/Dockerfile
           test -f app/app.py
           test -f app/requirements.txt
+          test -f nginx/Dockerfile
+          test -f nginx/nginx.conf
+          test -f html/index.html
           test -f docker-compose.yml
 
           test -n "$ACR_REGISTRY" || {
@@ -65,18 +68,18 @@ jobs:
         with:
           driver: docker-container
 
-      - name: Build Docker image
+      - name: Build application image
         uses: docker/build-push-action@v6
         with:
           context: ./app
           file: ./app/Dockerfile
-          tags: file-server-ci:${{ github.sha }}
+          tags: file-server-app-ci:${{ github.sha }}
           load: true
           push: false
-          cache-from: type=gha,scope=file-server
-          cache-to: type=gha,mode=max,scope=file-server
+          cache-from: type=gha,scope=file-server-app
+          cache-to: type=gha,mode=max,scope=file-server-app
 
-      - name: Smoke test container
+      - name: Smoke test application container
         shell: bash
         run: |
           set -euo pipefail
@@ -85,7 +88,7 @@ jobs:
             -p 127.0.0.1:5000:5000 \
             -e SECRET_KEY=ci-only-test-secret \
             -e FILE_PASSWORD=ci-only-test-password \
-            file-server-ci:${GITHUB_SHA}
+            file-server-app-ci:${GITHUB_SHA}
 
           cleanup() {
             docker rm -f file-server-ci-test >/dev/null 2>&1 || true
@@ -107,6 +110,25 @@ jobs:
             echo "::error::Container health check failed"
             exit 1
           fi
+
+      - name: Build Nginx web image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./nginx/Dockerfile
+          tags: file-server-nginx-ci:${{ github.sha }}
+          load: true
+          push: false
+          cache-from: type=gha,scope=file-server-nginx
+          cache-to: type=gha,mode=max,scope=file-server-nginx
+
+      - name: Validate Nginx configuration
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker run --rm \
+            -v "$PWD/certs:/etc/nginx/certs:ro" \
+            file-server-nginx-ci:${GITHUB_SHA} nginx -t
 
       - name: Generate readable China-time tags
         id: image-tags
@@ -133,7 +155,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Tag and publish to both registries
+      - name: Tag and publish both images to both registries
         shell: bash
         env:
           ACR_IMAGE: ${{ vars.ACR_IMAGE }}
@@ -142,24 +164,29 @@ jobs:
           SHORT_SHA: ${{ steps.image-tags.outputs.short_sha }}
         run: |
           set -euo pipefail
-          SOURCE="file-server-ci:${GITHUB_SHA}"
 
-          for IMAGE in "$ACR_IMAGE" "$GHCR_IMAGE"; do
-            docker tag "$SOURCE" "${IMAGE}:${TIMESTAMP_TAG}"
-            docker tag "$SOURCE" "${IMAGE}:${SHORT_SHA}"
-            docker tag "$SOURCE" "${IMAGE}:latest"
-            docker push "${IMAGE}:${TIMESTAMP_TAG}"
-            docker push "${IMAGE}:${SHORT_SHA}"
-            docker push "${IMAGE}:latest"
-          done
+          publish_image() {
+            local SOURCE="$1"
+            local IMAGE="$2"
+            for TAG in "$TIMESTAMP_TAG" "$SHORT_SHA" latest; do
+              docker tag "$SOURCE" "${IMAGE}:$TAG"
+              docker push "${IMAGE}:$TAG"
+            done
+            echo "Published image: $IMAGE (tags: $TIMESTAMP_TAG, $SHORT_SHA, latest)"
+          }
+
+          publish_image "file-server-app-ci:${GITHUB_SHA}" "$ACR_IMAGE"
+          publish_image "file-server-nginx-ci:${GITHUB_SHA}" "${ACR_IMAGE}-nginx"
+          publish_image "file-server-app-ci:${GITHUB_SHA}" "$GHCR_IMAGE"
+          publish_image "file-server-nginx-ci:${GITHUB_SHA}" "${GHCR_IMAGE}-nginx"
 
           {
             echo "### Published Docker images"
             echo
-            echo "- China-time tag: $TIMESTAMP_TAG"
-            echo "- Short commit tag: $SHORT_SHA"
-            echo "- Rolling tag: latest"
+            echo "Tags: $TIMESTAMP_TAG, $SHORT_SHA, latest"
             echo
-            echo "- ACR: $ACR_IMAGE:$TIMESTAMP_TAG"
-            echo "- GHCR: $GHCR_IMAGE:$TIMESTAMP_TAG"
+            echo "ACR app: $ACR_IMAGE"
+            echo "ACR web: ${ACR_IMAGE}-nginx"
+            echo "GHCR app: $GHCR_IMAGE"
+            echo "GHCR web: ${GHCR_IMAGE}-nginx"
           } >> "$GITHUB_STEP_SUMMARY"
