@@ -1,0 +1,5 @@
+.env
+certs/server.crt
+certs/server.key
+__pycache__/
+*.py[cod]
